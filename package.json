@@ -1,0 +1,53 @@
+{
+  "name": "piccc",
+  "version": "0.1.0",
+  "description": "科研图表排版工具 - Scientific Figure Layout Tool",
+  "main": "out/main/index.js",
+  "author": "Piccc",
+  "license": "MIT",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "pack:mac": "electron-vite build && electron-builder --mac",
+    "pack:win": "electron-vite build && electron-builder --win"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.6.1",
+    "antd": "^5.24.7",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zustand": "^5.0.5",
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/language": "^6.10.8",
+    "@codemirror/legacy-modes": "^6.5.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "codemirror": "^6.0.1",
+    "utif": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "electron": "^35.1.2",
+    "electron-builder": "^26.0.12",
+    "electron-vite": "^3.1.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  },
+  "build": {
+    "appId": "com.piccc.app",
+    "productName": "皮克西西图表排版",
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.graphics-design"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "files": [
+      "out/**/*"
+    ]
+  },
+  "allowScripts": {}
+}

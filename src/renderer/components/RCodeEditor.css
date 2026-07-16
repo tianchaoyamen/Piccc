@@ -1,0 +1,126 @@
+/* R Code Editor Modal */
+.r-editor-modal .ant-modal-content {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.r-editor-modal .ant-modal-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  margin: 0;
+}
+
+.r-editor-modal .ant-modal-body {
+  padding: 0;
+}
+
+.r-editor-modal .ant-modal-footer {
+  padding: 12px 24px;
+  border-top: 1px solid #e2e8f0;
+  margin: 0;
+}
+
+.r-editor-layout {
+  display: flex;
+  height: 500px;
+  overflow: hidden;
+}
+
+.r-editor-left {
+  flex: 0 0 55%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #e2e8f0;
+  background: #282c34; /* match oneDark theme */
+}
+
+.r-editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #21252b;
+  border-bottom: 1px solid #383c44;
+}
+
+.r-editor-codemirror {
+  flex: 1;
+  overflow: auto;
+}
+
+.r-editor-codemirror .cm-editor {
+  height: 100%;
+}
+
+.r-editor-right {
+  flex: 0 0 45%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #f8fafc;
+  position: relative;
+}
+
+.r-preview-image {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s ease;
+}
+
+.r-preview-meta {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.r-preview-empty {
+  text-align: center;
+  color: #94a3b8;
+}
+
+.r-preview-empty .anticon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  color: #cbd5e1;
+}
+
+.r-error-box {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+}
+
+.r-editor-spin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Run button styling */
+.r-run-btn {
+  background: #22c55e !important;
+  border-color: #22c55e !important;
+  color: white !important;
+  font-weight: 500;
+}
+
+.r-run-btn:hover {
+  background: #16a34a !important;
+  border-color: #16a34a !important;
+}
+
+.r-run-btn:disabled {
+  background: #86efac !important;
+  border-color: #86efac !important;
+}
