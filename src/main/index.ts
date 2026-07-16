@@ -27,6 +27,7 @@ function createWindow(): void {
     minWidth: 900,
     minHeight: 600,
     title: '皮克西西图表排版',
+    autoHideMenuBar: true,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,

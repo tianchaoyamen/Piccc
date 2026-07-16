@@ -804,6 +804,7 @@ export default function App() {
   const [classicCollapsed, setClassicCollapsed] = useState(false)
   const [customModalVisible, setCustomModalVisible] = useState(false)
   const [editLayoutModalVisible, setEditLayoutModalVisible] = useState(false)
+  const [activeTemplateId, setActiveTemplateId] = useState<string | null>(null)
 
   // Load custom templates and classic templates order on mount
   useEffect(() => {
@@ -883,6 +884,7 @@ export default function App() {
     setCustomTemplates(updated)
     localStorage.setItem('piccc_custom_templates', JSON.stringify(updated))
     setCustomModalVisible(false)
+    setActiveTemplateId(newTpl.id)
     messageApi.success(`已保存自定义模板 "${name}"`)
   }
 
@@ -891,9 +893,12 @@ export default function App() {
       const updated = customTemplates.filter((t) => t.id !== id)
       setCustomTemplates(updated)
       localStorage.setItem('piccc_custom_templates', JSON.stringify(updated))
+      if (activeTemplateId === id) {
+        setActiveTemplateId(null)
+      }
       messageApi.success('已成功删除该自定义模板')
     },
-    [customTemplates, messageApi]
+    [customTemplates, activeTemplateId, messageApi]
   )
 
   const handleSaveCurrentLayoutAsTemplate = useCallback(
@@ -922,6 +927,7 @@ export default function App() {
       const updated = [...customTemplates, newTpl]
       setCustomTemplates(updated)
       localStorage.setItem('piccc_custom_templates', JSON.stringify(updated))
+      setActiveTemplateId(newTpl.id)
       messageApi.success(`已另存为自定义模板 "${name}"`)
     },
     [currentProject, customTemplates, messageApi]
@@ -977,6 +983,7 @@ export default function App() {
   // Handle template click with content migration
   const handleTemplateClick = useCallback(
     (template: TemplateDefinition) => {
+      setActiveTemplateId(template.id)
       const applyTemplateSettings = () => {
         const saved = localStorage.getItem('piccc_template_settings')
         if (saved) {
@@ -1065,13 +1072,14 @@ export default function App() {
           content: `新布局仅包含 ${newCellsCount} 个单元格，而当前项目有 ${existingContents.length} 个单元格包含内容。切换后，排在后面的 ${existingContents.length - newCellsCount} 个单元格的内容将被丢弃。`,
           okText: '确认切换',
           cancelText: '取消',
+          centered: true,
           onOk: performMigration,
         })
       } else {
         performMigration()
       }
     },
-    [currentProject, createProject, switchProjectLayout, updateGlobalSettings, messageApi, modal]
+    [currentProject, createProject, switchProjectLayout, updateGlobalSettings, messageApi, modal, setActiveTemplateId]
   )
 
   // Handle cell update from properties panel
@@ -1188,12 +1196,26 @@ export default function App() {
 
   // Find active template matching current project grid config
   const activeTemplate = useMemo(() => {
-    const foundStatic = TEMPLATES.find(isTemplateActive)
-    if (foundStatic) return { tpl: foundStatic, isCustom: false }
+    if (!currentProject) return null
+
+    // If there is a specified activeTemplateId, try to match it first to preserve custom selection
+    if (activeTemplateId) {
+      const custom = customTemplates.find((t) => t.id === activeTemplateId)
+      if (custom && isTemplateActive(custom)) return { tpl: custom, isCustom: true }
+
+      const staticTpl = TEMPLATES.find((t) => t.id === activeTemplateId)
+      if (staticTpl && isTemplateActive(staticTpl)) return { tpl: staticTpl, isCustom: false }
+    }
+
+    // Fallback: match custom templates first (so if saved from a classic template, it shows custom edit actions)
     const foundCustom = customTemplates.find(isTemplateActive)
     if (foundCustom) return { tpl: foundCustom, isCustom: true }
+
+    const foundStatic = TEMPLATES.find(isTemplateActive)
+    if (foundStatic) return { tpl: foundStatic, isCustom: false }
+
     return null
-  }, [isTemplateActive, customTemplates])
+  }, [currentProject, customTemplates, activeTemplateId, isTemplateActive])
 
   // Compute page ratio styles dynamically (A4 vs PPT 16:9)
   const pageStyle = useMemo<React.CSSProperties>(() => {
@@ -1324,6 +1346,7 @@ export default function App() {
               content: `检测到单元格大小 and 范围发生了变化。是否同步将修改保存到自定义模板 "${activeTemplate.tpl.name}" 中？`,
               okText: '确认保存',
               cancelText: '仅临时调整',
+              centered: true,
               onOk: () => {
                 const updated = customTemplates.map((t) => {
                   if (t.id === activeTemplate.tpl.id) {
@@ -1351,6 +1374,7 @@ export default function App() {
           content: `调整后的布局包含 ${newCells.length} 个单元格，而当前有 ${existingContents.length} 个单元格包含内容。调整后，排在后面的 ${existingContents.length - newCells.length} 个单元格的内容将被丢弃。`,
           okText: '确认调整',
           cancelText: '取消',
+          centered: true,
           onOk: performSwitch,
         })
       } else {
@@ -1587,7 +1611,7 @@ export default function App() {
                       <div
                         key={tpl.id}
                         className={`template-card ${
-                          isTemplateActive(tpl) ? 'template-card-active' : ''
+                          activeTemplate && activeTemplate.tpl.id === tpl.id ? 'template-card-active' : ''
                         }`}
                         onClick={() => handleTemplateClick(tpl)}
                         draggable
@@ -1639,7 +1663,7 @@ export default function App() {
                   <div
                     key={tpl.id}
                     className={`template-card ${
-                      isTemplateActive(tpl) ? 'template-card-active' : ''
+                      activeTemplate && activeTemplate.tpl.id === tpl.id ? 'template-card-active' : ''
                     }`}
                     onClick={() => handleTemplateClick(tpl)}
                     draggable
@@ -2548,6 +2572,7 @@ function TemplatePropertiesPanel({
       ),
       okText: '确认保存',
       cancelText: '取消',
+      centered: true,
       onOk: () => {
         const input = document.getElementById('save-as-tpl-name-input') as HTMLInputElement
         const nameVal = input ? input.value.trim() : ''
@@ -2569,6 +2594,7 @@ function TemplatePropertiesPanel({
       okText: '确认删除',
       okType: 'danger',
       cancelText: '取消',
+      centered: true,
       onOk: () => {
         onDelete(template.id)
       }
