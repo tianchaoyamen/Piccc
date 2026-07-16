@@ -697,6 +697,7 @@ export default function App() {
   } = useProjectStore()
 
   const [messageApi, contextHolder] = message.useMessage()
+  const [modal, modalContextHolder] = Modal.useModal()
 
   // R Code Editor state
   const [rEditorVisible, setREditorVisible] = useState(false)
@@ -1059,7 +1060,7 @@ export default function App() {
 
       // If existing contents exceed new layout cell capacity, warn/prompt the user
       if (existingContents.length > newCellsCount) {
-        Modal.confirm({
+        modal.confirm({
           title: '确认切换布局？',
           content: `新布局仅包含 ${newCellsCount} 个单元格，而当前项目有 ${existingContents.length} 个单元格包含内容。切换后，排在后面的 ${existingContents.length - newCellsCount} 个单元格的内容将被丢弃。`,
           okText: '确认切换',
@@ -1070,7 +1071,7 @@ export default function App() {
         performMigration()
       }
     },
-    [currentProject, createProject, switchProjectLayout, updateGlobalSettings, messageApi]
+    [currentProject, createProject, switchProjectLayout, updateGlobalSettings, messageApi, modal]
   )
 
   // Handle cell update from properties panel
@@ -1318,9 +1319,9 @@ export default function App() {
             .join(';')
 
           if (tplMergedStr !== newMergedStr) {
-            Modal.confirm({
+            modal.confirm({
               title: '是否保存修改到模板？',
-              content: `检测到单元格大小和范围发生了变化。是否同步将修改保存到自定义模板 "${activeTemplate.tpl.name}" 中？`,
+              content: `检测到单元格大小 and 范围发生了变化。是否同步将修改保存到自定义模板 "${activeTemplate.tpl.name}" 中？`,
               okText: '确认保存',
               cancelText: '仅临时调整',
               onOk: () => {
@@ -1345,7 +1346,7 @@ export default function App() {
       }
 
       if (existingContents.length > newCells.length) {
-        Modal.confirm({
+        modal.confirm({
           title: '确认调整排版布局？',
           content: `调整后的布局包含 ${newCells.length} 个单元格，而当前有 ${existingContents.length} 个单元格包含内容。调整后，排在后面的 ${existingContents.length - newCells.length} 个单元格的内容将被丢弃。`,
           okText: '确认调整',
@@ -1356,7 +1357,7 @@ export default function App() {
         performSwitch()
       }
     },
-    [currentProject, activeTemplate, customTemplates, switchProjectLayout, messageApi]
+    [currentProject, activeTemplate, customTemplates, switchProjectLayout, messageApi, modal]
   )
 
   // Handle opening image editor
@@ -1424,6 +1425,7 @@ export default function App() {
   return (
     <ConfigProvider locale={zhCN} theme={getAntdTheme(currentProject?.theme || 'nature')}>
       {contextHolder}
+      {modalContextHolder}
       <div className="app-layout" data-theme={currentProject?.theme || 'nature'}>
         {/* ═══ Header ═══ */}
         <header className="app-header">
@@ -1807,6 +1809,7 @@ export default function App() {
                 onUpdateSettings={handleUpdateGlobalSettings}
                 onEditLayout={() => setEditLayoutModalVisible(true)}
                 messageApi={messageApi}
+                modal={modal}
               />
             ) : (
               <div className="props-hint">
@@ -2495,6 +2498,7 @@ interface TemplatePropertiesPanelProps {
   onUpdateSettings?: (settings: Partial<ProjectData>) => void
   onEditLayout?: () => void
   messageApi?: any
+  modal?: any
 }
 
 function TemplatePropertiesPanel({
@@ -2506,6 +2510,7 @@ function TemplatePropertiesPanel({
   onUpdateSettings,
   onEditLayout,
   messageApi,
+  modal,
 }: TemplatePropertiesPanelProps) {
   const { currentProject, updateGlobalSettings: storeUpdateSettings } = useProjectStore()
   const [name, setName] = useState(template.name)
@@ -2533,7 +2538,7 @@ function TemplatePropertiesPanel({
   // Handle saving current project layout as a new custom template
   const handleSaveAsTemplateClick = () => {
     if (!onSaveCurrentAsTemplate || !currentProject) return
-    Modal.confirm({
+    modal?.confirm({
       title: '另存为自定义模板',
       content: (
         <div style={{ marginTop: 10 }}>
@@ -2558,7 +2563,7 @@ function TemplatePropertiesPanel({
   // Handle deletion of this custom template with confirmation
   const handleDeleteClick = () => {
     if (!onDelete) return
-    Modal.confirm({
+    modal?.confirm({
       title: '确认删除自定义模板？',
       content: `模板 "${template.name}" 将会被永久删除，此操作不可恢复。`,
       okText: '确认删除',
