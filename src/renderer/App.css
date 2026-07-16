@@ -622,6 +622,19 @@ body,
   position: relative;
 }
 
+.designer-canvas-grid-overlay {
+  display: grid;
+  grid-template-rows: repeat(10, 1fr);
+  grid-template-columns: repeat(10, 1fr);
+  gap: 3px;
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  right: 8px;
+  bottom: 8px;
+  pointer-events: none;
+}
+
 .designer-cell-dot {
   aspect-ratio: 1;
   background: #ffffff;
@@ -656,6 +669,7 @@ body,
   position: relative;
   z-index: 10;
   transition: all 0.2s ease;
+  pointer-events: auto;
 }
 
 .designer-drawn-cell-label {

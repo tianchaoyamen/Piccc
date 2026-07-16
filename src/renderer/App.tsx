@@ -2449,9 +2449,13 @@ function CustomTemplateModal({
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
           >
+            {/* Background Dots Grid */}
             <div className="designer-canvas-grid">
               {gridCells}
-              
+            </div>
+
+            {/* Overlay Layer for Drawn Cells & Preview */}
+            <div className="designer-canvas-grid-overlay">
               {mergedCells.map((cell) => (
                 <div
                   key={cell.id}
