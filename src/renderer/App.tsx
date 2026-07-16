@@ -29,6 +29,7 @@ import {
   PictureOutlined,
   DeleteOutlined,
   EditOutlined,
+  ReloadOutlined,
 } from '@ant-design/icons'
 import zhCN from 'antd/locale/zh_CN'
 import { useProjectStore } from './store/project-store'
@@ -1696,13 +1697,13 @@ export default function App() {
               <>
                 <div className="sidebar-title" style={{ borderTop: '1px solid var(--border-light)', marginTop: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <FolderOpenOutlined /> 科研素材库
+                    <FolderOpenOutlined /> 素材库
                   </span>
                   <Tooltip title="刷新素材文件">
                     <Button
                       type="text"
                       size="small"
-                      icon={<PlusOutlined rotate={45} style={{ transform: 'rotate(45deg)' }} />}
+                      icon={<ReloadOutlined style={{ fontSize: '12px' }} />}
                       onClick={fetchAssets}
                       style={{ fontSize: '11px', padding: 0 }}
                     />
@@ -2080,7 +2081,7 @@ export default function App() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
                         <Typography.Text strong style={{ display: 'block' }}>
-                          📁 开启科研素材库
+                          📁 开启素材库
                         </Typography.Text>
                         <Typography.Text type="secondary" style={{ fontSize: '11px' }}>
                           提供本地图表素材一键快捷拖放与管理
