@@ -292,10 +292,12 @@ async function exportLayoutToCanvas(
   ctx.fillRect(0, 0, canvasWidth, canvasHeight)
 
   // Sort cells in layout order for numbering
-  const sortedCells = [...grid.cells].sort((a, b) => {
-    if (a.row !== b.row) return a.row - b.row
-    return a.col - b.col
-  })
+  const sortedCells = [...grid.cells]
+    .sort((a, b) => {
+      if (a.row !== b.row) return a.row - b.row
+      return a.col - b.col
+    })
+    .filter((c) => c.content.type !== 'empty')
 
   // Draw cells
   for (const cell of grid.cells) {

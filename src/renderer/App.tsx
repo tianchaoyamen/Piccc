@@ -160,7 +160,8 @@ function GridCellView({
       if (a.row !== b.row) return a.row - b.row
       return a.col - b.col
     })
-    return sorted.findIndex((c) => c.id === cell.id)
+    const filtered = sorted.filter((c) => c.content.type !== 'empty')
+    return filtered.findIndex((c) => c.id === cell.id)
   }, [currentProject?.grid.cells, cell.id])
 
   // Get auto-number prefix
