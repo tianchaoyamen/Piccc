@@ -2142,6 +2142,7 @@ function CustomTemplateModal({
   initialName = '',
   initialMergedCells = [],
   okText = '确认并保存模板',
+  messageApi,
 }: CustomTemplateModalProps) {
   const currentProject = useProjectStore((state) => state.currentProject)
 
@@ -2178,7 +2179,8 @@ function CustomTemplateModal({
         }
       }
     }
-  }, [visible, initialName, initialMergedCells, currentProject])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible])
 
   const checkOverlap = (
     r1: number, c1: number, r2: number, c2: number
@@ -2285,11 +2287,8 @@ function CustomTemplateModal({
     return {
       gridRow: `${cell.row + 1} / span ${cell.rowSpan}`,
       gridColumn: `${cell.col + 1} / span ${cell.colSpan}`,
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      right: 0,
-      bottom: 0,
+      width: '100%',
+      height: '100%',
     }
   }
 
@@ -2304,11 +2303,8 @@ function CustomTemplateModal({
     dragPreviewStyle = {
       gridRow: `${rMin + 1} / span ${rMax - rMin + 1}`,
       gridColumn: `${cMin + 1} / span ${cMax - cMin + 1}`,
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      right: 0,
-      bottom: 0,
+      width: '100%',
+      height: '100%',
     }
   }
 

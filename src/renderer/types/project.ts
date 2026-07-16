@@ -96,6 +96,8 @@ export interface TemplateDefinition {
   cols: number
   icon: string
   mergedCells?: Array<{ row: number; col: number; rowSpan: number; colSpan: number }>
+  pageFormat?: 'a4' | 'ppt'
+  pageOrientation?: 'portrait' | 'landscape'
 }
 
 declare module 'utif' {
