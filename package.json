@@ -10,7 +10,7 @@
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "pack:mac": "electron-vite build && electron-builder --mac",
-    "pack:win": "electron-vite build && electron-builder --win"
+    "pack:win": "electron-vite build && electron-builder --win --x64"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
@@ -47,6 +47,7 @@
     },
     "nsis": {
       "oneClick": false,
+      "perMachine": true,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": "always",
       "createStartMenuShortcut": true,

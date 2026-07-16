@@ -28,15 +28,15 @@ npm run build
 
 if [ "$TARGET" = "mac" ] || [ "$TARGET" = "all" ]; then
   echo -e "\n${GREEN}[2] 正在打包 macOS (DMG) 安装包...${NC}"
-  # Delete outdated icns to force recreation
-  rm -f build/icon.icns
+  # Compile native macOS icon.icns from icon.png dynamically to prevent cache issues
+  ./venv/bin/python /Users/qsw/.gemini/antigravity/brain/b8b29924-7d91-45ae-9c51-9c3a10dcc4ba/scratch/create_icns.py
   npx electron-builder --mac
   echo -e "${GREEN}✓ macOS DMG 打包完成!${NC}"
 fi
 
 if [ "$TARGET" = "win" ] || [ "$TARGET" = "all" ]; then
-  echo -e "\n${GREEN}[3] 正在打包 Windows (EXE) 安装包...${NC}"
-  npx electron-builder --win
+  echo -e "\n${GREEN}[3] 正在打包 Windows (EXE) 安装包 (x64)...${NC}"
+  npx electron-builder --win --x64
   echo -e "${GREEN}✓ Windows EXE 打包完成!${NC}"
 fi
 
