@@ -15,6 +15,7 @@ import {
   Modal,
   Switch,
   Slider,
+  Tabs,
 } from 'antd'
 import {
   PlusOutlined,
@@ -1923,195 +1924,221 @@ export default function App() {
         />
 
         {/* ═══ Settings Modal ═══ */}
+        {/* ═══ Settings Modal ═══ */}
         <Modal
           title="⚙️ 系统设置"
           open={settingsVisible}
           onCancel={() => setSettingsVisible(false)}
           footer={null}
-          width={420}
+          width={460}
           destroyOnClose
         >
-          <div style={{ padding: '8px 0', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {/* Theme Settings */}
-            <div>
-              <Typography.Text strong style={{ display: 'block', marginBottom: '6px' }}>
-                🎨 期刊视觉主题
-              </Typography.Text>
-              <Typography.Paragraph type="secondary" style={{ fontSize: '11px', marginBottom: '8px', lineHeight: '1.4' }}>
-                选择经典刊物的经典元素与配色体系，切换后将即时更新软件视觉系统。
-              </Typography.Paragraph>
-              <Select
-                value={currentProject?.theme || 'nature'}
-                onChange={(val) => {
-                  if (currentProject) {
-                    setTheme(val)
-                  }
-                }}
-                disabled={!currentProject}
-                options={[
-                  { value: 'nature', label: '🌿 Nature (翡翠绿)' },
-                  { value: 'science', label: '🌋 Science (绯红色)' },
-                  { value: 'cell', label: '🧬 Cell (珊瑚橘)' },
-                  { value: 'ieee', label: '📡 IEEE (深蓝色)' },
-                ]}
-                placeholder={currentProject ? "选择视觉主题..." : "请先新建项目..."}
-                style={{ width: '100%' }}
-              />
-            </div>
+          <Tabs
+            defaultActiveKey="1"
+            style={{ marginTop: '-8px' }}
+            items={[
+              {
+                key: '1',
+                label: '🎨 视觉与外观',
+                children: (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '12px 0 4px' }}>
+                    {/* Theme Settings */}
+                    <div>
+                      <Typography.Text strong style={{ display: 'block', marginBottom: '6px' }}>
+                        🎨 期刊视觉主题
+                      </Typography.Text>
+                      <Typography.Paragraph type="secondary" style={{ fontSize: '11px', marginBottom: '8px', lineHeight: '1.4' }}>
+                        选择经典刊物的配色体系，切换后将即时更新软件视觉系统。
+                      </Typography.Paragraph>
+                      <Select
+                        value={currentProject?.theme || 'nature'}
+                        onChange={(val) => {
+                          if (currentProject) {
+                            setTheme(val)
+                          }
+                        }}
+                        disabled={!currentProject}
+                        options={[
+                          { value: 'nature', label: '🌿 Nature (翡翠绿)' },
+                          { value: 'science', label: '🌋 Science (绯红色)' },
+                          { value: 'cell', label: '🧬 Cell (珊瑚橘)' },
+                          { value: 'ieee', label: '📡 IEEE (深蓝色)' },
+                        ]}
+                        placeholder={currentProject ? "选择视觉主题..." : "请先新建项目..."}
+                        style={{ width: '100%' }}
+                      />
+                    </div>
 
-            {/* Default Export Path Settings */}
-            <div>
-              <Typography.Text strong style={{ display: 'block', marginBottom: '6px' }}>
-                📁 默认导出文件夹
-              </Typography.Text>
-              <Typography.Paragraph type="secondary" style={{ fontSize: '11px', marginBottom: '8px', lineHeight: '1.4' }}>
-                配置排版图表导出时的默认文件夹。未指定时将由系统提示选择或保存至项目目录。
-              </Typography.Paragraph>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <Input
-                  size="small"
-                  value={currentProject?.defaultExportPath || '未指定，默认保存至项目或上次导出路径'}
-                  disabled
-                  placeholder="选择默认导出文件夹"
-                  style={{ flex: 1, fontSize: '11px', color: 'var(--text-secondary)' }}
-                />
-                <Button 
-                  size="small" 
-                  type="primary" 
-                  ghost 
-                  disabled={!currentProject}
-                  onClick={async () => {
-                    if (window.picccAPI?.assets?.selectFolder) {
-                      const res = await window.picccAPI.assets.selectFolder()
-                      if (res.success && res.path) {
-                        updateGlobalSettings({ defaultExportPath: res.path })
-                        messageApi.success('已更新默认导出路径')
-                      }
-                    }
-                  }}
-                >
-                  选择路径
-                </Button>
-              </div>
-            </div>
-
-            {/* R Environment Settings */}
-            <div>
-              <Typography.Text strong style={{ display: 'block', marginBottom: '6px' }}>
-                📊 R 语言执行环境
-              </Typography.Text>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>当前状态:</span>
-                  <Tag color={rEnvironment.found ? 'success' : 'error'} style={{ margin: 0, fontSize: '11px' }}>
-                    {rEnvironment.found ? `已连接 (v${rEnvironment.version})` : '未检测到 R 环境'}
-                  </Tag>
-                </div>
-                <div style={{ fontSize: '11px', color: 'var(--text-secondary)', wordBreak: 'break-all', lineHeight: '1.4' }}>
-                  <strong>执行路径:</strong> {rEnvironment.path || '无'}
-                </div>
-                <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
-                  <Button 
-                    size="small" 
-                    type="primary" 
-                    ghost
-                    onClick={handleDetectR}
-                  >
-                    自动重新检测
-                  </Button>
-                  <Button 
-                    size="small" 
-                    onClick={handleSelectCustomR}
-                  >
-                    手动选择 Rscript
-                  </Button>
-                  {customRPath && (
-                    <Button 
-                      size="small" 
-                      danger 
-                      type="text"
-                      onClick={handleClearCustomR}
-                      style={{ padding: '0 4px', fontSize: '11px' }}
-                    >
-                      恢复默认
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Template Display Toggle */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <Typography.Text strong style={{ display: 'block' }}>
-                  🔲 显示经典科研模板
-                </Typography.Text>
-                <Typography.Text type="secondary" style={{ fontSize: '11px' }}>
-                  在左侧边栏显示系统预设的科研网格布局模板
-                </Typography.Text>
-              </div>
-              <Switch checked={showClassicTemplates} onChange={setShowClassicTemplates} />
-            </div>
-
-            {/* Enable Material Library */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <Typography.Text strong style={{ display: 'block' }}>
-                  📁 开启科研素材库
-                </Typography.Text>
-                <Typography.Text type="secondary" style={{ fontSize: '11px' }}>
-                  加载本地文件夹中的图表，提供缩略图快捷拖拽与管理
-                </Typography.Text>
-              </div>
-              <Switch checked={enableAssetLibrary} onChange={setEnableAssetLibrary} />
-            </div>
-
-            {/* Material Library Details (only visible if enabled) */}
-            {enableAssetLibrary && (
-              <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div>
-                  <Typography.Text style={{ fontSize: '12px', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>
-                    素材库物理路径
-                  </Typography.Text>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <Input
-                      size="small"
-                      value={assetLibraryPath || defaultAssetPath || '未指定，默认指向项目下的 assets 目录'}
-                      disabled
-                      placeholder="请选择素材库文件夹"
-                      style={{ flex: 1, fontSize: '11px', color: 'var(--text-secondary)' }}
-                    />
-                    <Button size="small" type="primary" ghost onClick={handleChangeAssetPath}>
-                      更改路径
-                    </Button>
+                    {/* Template Display Toggle */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                      <div>
+                        <Typography.Text strong style={{ display: 'block' }}>
+                          🔲 显示经典科研模板
+                        </Typography.Text>
+                        <Typography.Text type="secondary" style={{ fontSize: '11px' }}>
+                          在左侧边栏显示系统预设的科研网格布局模板
+                        </Typography.Text>
+                      </div>
+                      <Switch checked={showClassicTemplates} onChange={setShowClassicTemplates} />
+                    </div>
                   </div>
-                  {!filePath && !assetLibraryPath && (
-                    <span style={{ fontSize: '10px', color: '#ff4d4f', display: 'block', marginTop: '4px' }}>
-                      ⚠️ 项目未保存，无法生成默认路径。请手动选择目录，或先保存项目。
-                    </span>
-                  )}
-                </div>
+                ),
+              },
+              {
+                key: '2',
+                label: '📊 R 执行环境',
+                children: (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '12px 0 4px' }}>
+                    <div>
+                      <Typography.Text strong style={{ display: 'block', marginBottom: '6px' }}>
+                        📊 R 语言执行环境
+                      </Typography.Text>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>当前状态:</span>
+                          <Tag color={rEnvironment.found ? 'success' : 'error'} style={{ margin: 0, fontSize: '11px' }}>
+                            {rEnvironment.found ? `已连接 (v${rEnvironment.version})` : '未检测到 R 环境'}
+                          </Tag>
+                        </div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', wordBreak: 'break-all', lineHeight: '1.4' }}>
+                          <strong>执行路径:</strong> {rEnvironment.path || '无'}
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                          <Button 
+                            size="small" 
+                            type="primary" 
+                            ghost
+                            onClick={handleDetectR}
+                          >
+                            自动重新检测
+                          </Button>
+                          <Button 
+                            size="small" 
+                            onClick={handleSelectCustomR}
+                          >
+                            手动选择 Rscript
+                          </Button>
+                          {customRPath && (
+                            <Button 
+                              size="small" 
+                              danger 
+                              type="text"
+                              onClick={handleClearCustomR}
+                              style={{ padding: '0 4px', fontSize: '11px' }}
+                            >
+                              恢复默认
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ),
+              },
+              {
+                key: '3',
+                label: '📁 存储与素材',
+                children: (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '12px 0 4px' }}>
+                    {/* Default Export Path Settings */}
+                    <div>
+                      <Typography.Text strong style={{ display: 'block', marginBottom: '6px' }}>
+                        📁 默认导出文件夹
+                      </Typography.Text>
+                      <Typography.Paragraph type="secondary" style={{ fontSize: '11px', marginBottom: '8px', lineHeight: '1.4' }}>
+                        配置排版图表导出时的默认文件夹。未指定时保存至项目或上次导出路径。
+                      </Typography.Paragraph>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <Input
+                          size="small"
+                          value={currentProject?.defaultExportPath || '未指定，默认保存至项目或上次导出路径'}
+                          disabled
+                          placeholder="选择默认导出文件夹"
+                          style={{ flex: 1, fontSize: '11px', color: 'var(--text-secondary)' }}
+                        />
+                        <Button 
+                          size="small" 
+                          type="primary" 
+                          ghost 
+                          disabled={!currentProject}
+                          onClick={async () => {
+                            if (window.picccAPI?.assets?.selectFolder) {
+                              const res = await window.picccAPI.assets.selectFolder()
+                              if (res.success && res.path) {
+                                updateGlobalSettings({ defaultExportPath: res.path })
+                                messageApi.success('已更新默认导出路径')
+                              }
+                            }
+                          }}
+                        >
+                          选择路径
+                        </Button>
+                      </div>
+                    </div>
 
-                <div>
-                  <Typography.Text style={{ fontSize: '12px', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>
-                    素材文件排列顺序
-                  </Typography.Text>
-                  <Select
-                    size="small"
-                    value={assetSortOrder}
-                    onChange={(val) => setAssetSortOrder(val)}
-                    style={{ width: '100%' }}
-                    options={[
-                      { value: 'time_desc', label: '🕒 按修改时间：从新到旧 (最新靠前)' },
-                      { value: 'time_asc', label: '🕒 按修改时间：从旧到新' },
-                      { value: 'name_asc', label: '🔤 按文件名称：A 至 Z' },
-                      { value: 'name_desc', label: '🔤 按文件名称：Z 至 A' },
-                    ]}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
+                    {/* Enable Material Library */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <Typography.Text strong style={{ display: 'block' }}>
+                          📁 开启科研素材库
+                        </Typography.Text>
+                        <Typography.Text type="secondary" style={{ fontSize: '11px' }}>
+                          提供本地图表素材一键快捷拖放与管理
+                        </Typography.Text>
+                      </div>
+                      <Switch checked={enableAssetLibrary} onChange={setEnableAssetLibrary} />
+                    </div>
+
+                    {/* Material Library Details (only visible if enabled) */}
+                    {enableAssetLibrary && (
+                      <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <div>
+                          <Typography.Text style={{ fontSize: '12px', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>
+                            素材库物理路径
+                          </Typography.Text>
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            <Input
+                              size="small"
+                              value={assetLibraryPath || defaultAssetPath || '未指定，默认指向项目下的 assets 目录'}
+                              disabled
+                              placeholder="请选择素材库文件夹"
+                              style={{ flex: 1, fontSize: '11px', color: 'var(--text-secondary)' }}
+                            />
+                            <Button size="small" type="primary" ghost onClick={handleChangeAssetPath}>
+                              更改路径
+                            </Button>
+                          </div>
+                          {!filePath && !assetLibraryPath && (
+                            <span style={{ fontSize: '10px', color: '#ff4d4f', display: 'block', marginTop: '4px' }}>
+                              ⚠️ 项目未保存，无法生成默认路径。请手动选择目录，或先保存项目。
+                            </span>
+                          )}
+                        </div>
+
+                        <div>
+                          <Typography.Text style={{ fontSize: '12px', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>
+                            素材文件排列顺序
+                          </Typography.Text>
+                          <Select
+                            size="small"
+                            value={assetSortOrder}
+                            onChange={(val) => setAssetSortOrder(val)}
+                            style={{ width: '100%' }}
+                            options={[
+                              { value: 'time_desc', label: '🕒 按修改时间：从新到旧 (最新靠前)' },
+                              { value: 'time_asc', label: '🕒 按修改时间：从旧到新' },
+                              { value: 'name_asc', label: '🔤 按文件名称：A 至 Z' },
+                              { value: 'name_desc', label: '🔤 按文件名称：Z 至 A' },
+                            ]}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ),
+              },
+            ]}
+          />
         </Modal>
 
         {/* ═══ Custom Template Modal ═══ */}
