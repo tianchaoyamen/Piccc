@@ -1,6 +1,6 @@
 {
   "name": "piccc",
-  "version": "0.1.0",
+  "version": "0.9.0",
   "description": "科研图表排版工具 - Scientific Figure Layout Tool",
   "main": "out/main/index.js",
   "author": "Piccc",
@@ -44,6 +44,14 @@
     },
     "win": {
       "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "皮克西西图表排版",
+      "language": "2052"
     },
     "files": [
       "out/**/*"
