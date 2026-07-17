@@ -872,7 +872,9 @@ export default function App() {
 
   const handleSaveCustomTemplate = (
     name: string,
-    mergedCells: Array<{ row: number; col: number; rowSpan: number; colSpan: number }>
+    mergedCells: Array<{ row: number; col: number; rowSpan: number; colSpan: number }>,
+    pageFormat?: 'a4' | 'ppt',
+    pageOrientation?: 'portrait' | 'landscape'
   ) => {
     const newTpl: TemplateDefinition = {
       id: `custom-${Math.random().toString(36).substring(2, 9)}`,
@@ -882,6 +884,8 @@ export default function App() {
       cols: 10,
       icon: '📐',
       mergedCells,
+      pageFormat,
+      pageOrientation,
     }
     const updated = [...customTemplates, newTpl]
     setCustomTemplates(updated)
@@ -1287,7 +1291,12 @@ export default function App() {
   )
 
   const handleSaveEditedLayout = useCallback(
-    (name: string, newMergedCells: Array<{ row: number; col: number; rowSpan: number; colSpan: number }>) => {
+    (
+      name: string, 
+      newMergedCells: Array<{ row: number; col: number; rowSpan: number; colSpan: number }>,
+      pageFormat?: 'a4' | 'ppt',
+      pageOrientation?: 'portrait' | 'landscape'
+    ) => {
       if (!currentProject) return
 
       // Perform switch layout with content migration
@@ -1330,6 +1339,10 @@ export default function App() {
         })
 
         switchProjectLayout(10, 10, migratedCells)
+        
+        if (pageFormat) updateGlobalSettings({ pageFormat })
+        if (pageOrientation) updateGlobalSettings({ pageOrientation })
+
         setEditLayoutModalVisible(false)
 
         // If there's an active custom template, check if layout changed
@@ -1459,7 +1472,7 @@ export default function App() {
         <header className="app-header">
           <Tooltip title="点击打开系统设置" placement="bottomLeft">
             <div className="logo" onClick={() => setSettingsVisible(true)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-              <img src={logoUrl} alt="Piccc Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              <img src={logoUrl} alt="Piccc Logo" style={{ width: '38px', height: '38px', objectFit: 'contain' }} />
             </div>
           </Tooltip>
           {currentProject && (
@@ -2405,7 +2418,10 @@ function CustomTemplateModal({
             </Typography.Text>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <div 
-                onClick={() => setPageFormat('a4')}
+                onClick={() => {
+                  setPageFormat('a4')
+                  setPageOrientation('portrait')
+                }}
                 style={{
                   border: `2px solid ${pageFormat === 'a4' ? 'var(--accent)' : 'var(--border)'}`,
                   background: pageFormat === 'a4' ? 'var(--accent-bg)' : '#ffffff',
@@ -2423,7 +2439,10 @@ function CustomTemplateModal({
               </div>
 
               <div 
-                onClick={() => setPageFormat('ppt')}
+                onClick={() => {
+                  setPageFormat('ppt')
+                  setPageOrientation('landscape')
+                }}
                 style={{
                   border: `2px solid ${pageFormat === 'ppt' ? 'var(--accent)' : 'var(--border)'}`,
                   background: pageFormat === 'ppt' ? 'var(--accent-bg)' : '#ffffff',
