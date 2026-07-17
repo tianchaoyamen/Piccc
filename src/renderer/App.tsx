@@ -35,7 +35,7 @@ import zhCN from 'antd/locale/zh_CN'
 import { useProjectStore } from './store/project-store'
 import { TEMPLATES } from './utils/template-data'
 import { createGridFromTemplate } from './utils/grid-utils'
-import type { GridCell, TemplateDefinition, CellContentType } from './types/project'
+import type { GridCell, TemplateDefinition, CellContentType, TextStyle, CellContent, ExportSettings, ProjectData } from './types/project'
 import RCodeEditor from './components/RCodeEditor'
 import ImageCropModal from './components/ImageCropModal'
 import ExportModal from './components/ExportModal'
@@ -324,7 +324,7 @@ function GridCellView({
         gridColumn: `${cell.col + 1} / span ${cell.colSpan}`,
         cursor: isDraggable ? 'grab' : 'pointer'
       }}
-      draggable={isDraggable}
+      draggable={!!isDraggable as any}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
@@ -1297,6 +1297,7 @@ export default function App() {
         description: 'temp',
         rows: 10,
         cols: 10,
+        icon: '📐',
         mergedCells: newMergedCells,
       })
 
@@ -2189,6 +2190,7 @@ interface CustomTemplateModalProps {
   initialName?: string
   initialMergedCells?: Array<{ id: string; row: number; col: number; rowSpan: number; colSpan: number }>
   okText?: string
+  messageApi?: any
 }
 
 function CustomTemplateModal({
@@ -2800,7 +2802,6 @@ function TemplatePropertiesPanel({
                 else if (val === 0) newGap = 0;
                 handleSettingsChange({ gridGap: newGap });
               }}
-              onChangeStart={() => setIsDraggingPropsGap(true)}
               onChangeComplete={() => setIsDraggingPropsGap(false)}
               tooltip={{
                 open: isDraggingPropsGap,

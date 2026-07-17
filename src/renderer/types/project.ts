@@ -100,7 +100,3 @@ export interface TemplateDefinition {
   pageOrientation?: 'portrait' | 'landscape'
 }
 
-declare module 'utif' {
-  export function encodeImage(rgba: Uint8Array | Uint8ClampedArray, w: number, h: number, metadata?: any): ArrayBuffer;
-  export function encode(ifds: any[]): ArrayBuffer;
-}

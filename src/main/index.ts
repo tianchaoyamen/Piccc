@@ -347,7 +347,7 @@ function setupIpcHandlers(): void {
         await new Promise<void>((resolve, reject) => {
           execFile(rDetect, [scriptPath], { timeout: 30000 }, (error, _stdout, stderr) => {
             if (error) {
-              if ((error as NodeJS.ErrnoException).killed) {
+              if ((error as any).killed) {
                 reject(new Error('R 脚本执行超时（30秒限制）'))
               } else {
                 reject(new Error(`R 执行错误: ${stderr || error.message}`))

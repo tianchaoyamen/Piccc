@@ -154,7 +154,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ visible, project, onClose }) 
                 step={0.5}
                 value={widthInches}
                 onChange={setWidthInches}
-                tooltip={{ formatter: (v) => `${v} 英寸 (${Math.round(v * 2.54)} cm)` }}
+                tooltip={{ formatter: (v) => v ? `${v} 英寸 (${Math.round(v * 2.54)} cm)` : '' }}
               />
             </Col>
             <Col span={8}>
