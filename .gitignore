@@ -14,6 +14,12 @@ dist/
 .DS_Store
 Thumbs.db
 
+# Virtual environments & env files
+venv/
+.env
+.env.*
+*.local
+
 # Project-specific temporary files
 .temp_app_old.tsx
 .temp_*.R

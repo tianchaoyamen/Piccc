@@ -3,8 +3,25 @@
   "version": "0.9.0",
   "description": "科研图表排版工具 - Scientific Figure Layout Tool",
   "main": "out/main/index.js",
-  "author": "Piccc",
+  "author": "Piccc Contributors",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tianchaoyamen/Piccc.git"
+  },
+  "homepage": "https://github.com/tianchaoyamen/Piccc#readme",
+  "bugs": {
+    "url": "https://github.com/tianchaoyamen/Piccc/issues"
+  },
+  "keywords": [
+    "figure-layout",
+    "scientific-figures",
+    "academic",
+    "electron",
+    "react",
+    "typescript",
+    "data-visualization"
+  ],
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
